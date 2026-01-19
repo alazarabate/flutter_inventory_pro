@@ -26,7 +26,7 @@ android {
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
-        applicationId = "com.example.new_inventory"
+        applicationId = "com.example.new_inventory2"
         minSdk = flutter.minSdkVersion          // flutter.minSdkVersion is undefined here
         targetSdk = 36
         versionCode = 1
@@ -79,4 +79,5 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 }

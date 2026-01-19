@@ -74,7 +74,11 @@ class ProductNotifier extends _$ProductNotifier {
 }
 
 final repositoryProvider = Provider<ProductRepository>((ref) {
-  final useCloud = ref.watch(useCloudProvider);
+  final async = ref.watch(syncNotifierProvider);
+
+  // while we are loading or on first frame we need *something* → fall back to Hive
+  final useCloud = async.value ?? false;
+
   return useCloud ? FirestoreRepository() : LocalRepository();
 });
 

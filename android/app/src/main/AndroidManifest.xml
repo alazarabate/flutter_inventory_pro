@@ -1,8 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.new_inventory">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:label="new_inventory"
+        android:label="new_inventory_2"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

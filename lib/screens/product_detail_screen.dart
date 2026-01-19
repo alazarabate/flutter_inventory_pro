@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/product.dart';
@@ -33,8 +32,8 @@ class ProductDetailScreen extends ConsumerWidget {
           children: [
             if (product.imagePath != null)
               Center(
-                child: Image.file(
-                  File(product.imagePath!),
+                child: Image.network(
+                  (product.imagePath!),
                   width: 200,
                   height: 200,
                   fit: BoxFit.cover,

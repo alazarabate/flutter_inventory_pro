@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/product.dart';
 import 'product_repository.dart';
 
@@ -12,6 +15,12 @@ class FirestoreRepository implements ProductRepository {
   Future<List<Product>> getAllProducts() async {
     final snapshot = await _firestore.collection(_collection).get();
     return snapshot.docs.map((doc) => Product.fromJson(doc.data())).toList();
+  }
+
+  Future<String> uploadImage(File imageFile, String ProductId) async {
+    final ref = FirebaseStorage.instance.ref('product_images/$ProductId.jpg');
+    await ref.putFile(imageFile);
+    return await ref.getDownloadURL();
   }
 
   Future<Product?> getProduct(String id) async {

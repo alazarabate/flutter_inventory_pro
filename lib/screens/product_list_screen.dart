@@ -1,10 +1,7 @@
-
 import 'package:new_inventory/providers/product_provider.dart';
 import 'package:new_inventory/widgets/product_card.dart';
 import 'package:rxdart/rxdart.dart';
-import 'dart:io';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'add_product_screen.dart';
 
@@ -63,12 +60,12 @@ class ProductListScreen extends ConsumerWidget {
               final filtered = query.isEmpty
                   ? products
                   : products
-                        .where(
-                          (p) => p.name.toLowerCase().contains(
-                            query.toLowerCase(),
-                          ),
-                        )
-                        .toList();
+                      .where(
+                        (p) => p.name.toLowerCase().contains(
+                              query.toLowerCase(),
+                            ),
+                      )
+                      .toList();
 
               return ListView.builder(
                 itemCount: filtered.length,
@@ -101,14 +98,17 @@ class ProductListScreen extends ConsumerWidget {
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text('DELETE', style: TextStyle(color: Colors.red)),
+                              child: const Text('DELETE',
+                                  style: TextStyle(color: Colors.red)),
                             ),
                           ],
                         ),
                       );
                     },
                     onDismissed: (direction) async {
-                      await ref.read(productProvider.notifier).deleteProduct(product.id);
+                      await ref
+                          .read(productProvider.notifier)
+                          .deleteProduct(product.id);
                     },
                     child: ProductCard(product: product),
                   );
@@ -179,18 +179,18 @@ class ProductSearchDelegate extends SearchDelegate {
         final suggestions = query.isEmpty
             ? products
             : products
-                  .where(
-                    (p) => p.name.toLowerCase().contains(query.toLowerCase()),
-                  )
-                  .toList();
+                .where(
+                  (p) => p.name.toLowerCase().contains(query.toLowerCase()),
+                )
+                .toList();
         return ListView.builder(
           itemCount: suggestions.length,
           itemBuilder: (context, index) {
             final product = suggestions[index];
             return ListTile(
               leading: product.imagePath != null
-                  ? Image.file(
-                      File(product.imagePath!),
+                  ? Image.network(
+                      (product.imagePath!),
                       width: 40,
                       height: 40,
                       fit: BoxFit.cover,

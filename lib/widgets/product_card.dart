@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:new_inventory/screens/product_detail_screen.dart';
@@ -63,59 +64,79 @@ class _ProductCardState extends ConsumerState<ProductCard>
     }
   }
 
- // In ProductCard widget - add this to your build method:
-@override
-Widget build(BuildContext context) {
-  return AnimatedBuilder(
-    animation: _controller,
-    builder: (context, child) {
-      return SizedBox(
-        height: 100,
-        child: Card(
-          color: _colorAnimation.value,
-          child: InkWell(  // ADD THIS: Makes the whole card tappable
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetailScreen(product: widget.product),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: widget.product.imagePath != null
-                    ? Image.file(
-                        File(widget.product.imagePath!),
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
-                        },
-                      )
-                    : const Icon(Icons.image, size: 50),
-                title: Text(widget.product.name),
-                subtitle: Text('${widget.product.price} ETB - Stock: ${widget.product.stock}'),
-                trailing: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Switch(
-                    value: widget.product.stock > 0,
-                    onChanged: (value) async {
-                      // Keep your existing switch logic
-                      final updated = widget.product.copyWith(stock: value ? 10 : 0);
-                      await ref.read(productProvider.notifier).updateProduct(updated);
-                    },
+  // In ProductCard widget - add this to your build method:
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return SizedBox(
+          height: 100,
+          child: Card(
+            color: _colorAnimation.value,
+            child: InkWell(
+              // ADD THIS: Makes the whole card tappable
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ProductDetailScreen(product: widget.product),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: widget.product.imagePath != null
+                      ? (widget.product.imagePath!.startsWith('http')
+                          // Firebase URL
+                          ? Image.network(
+                              widget.product.imagePath!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image,
+                                    size: 50, color: Colors.grey);
+                              },
+                            )
+                          // Local Hive path
+                          : Image.file(
+                              File(widget.product.imagePath!),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image,
+                                    size: 50, color: Colors.grey);
+                              },
+                            ))
+                      : const Icon(Icons.image, size: 50),
+                  title: Text(widget.product.name),
+                  subtitle: Text(
+                      '${widget.product.price} ETB - Stock: ${widget.product.stock}'),
+                  trailing: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Switch(
+                      value: widget.product.stock > 0,
+                      onChanged: (value) async {
+                        // Keep your existing switch logic
+                        final updated =
+                            widget.product.copyWith(stock: value ? 10 : 0);
+                        await ref
+                            .read(productProvider.notifier)
+                            .updateProduct(updated);
+                      },
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 }

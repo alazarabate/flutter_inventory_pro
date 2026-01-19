@@ -12,7 +12,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(themeProvider) == ThemeMode.dark;
     final current = ref.watch(localeProvider).languageCode;
-    final useCloud = ref.watch(useCloudProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('settings'.tr())),
@@ -38,13 +37,21 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          
-          SwitchListTile(
-            title: const Text('Use Cloud Sync'),
-            subtitle: Text(useCloud ? 'Firestore' : 'Local only'),
-            value: useCloud,
-            onChanged: (_) => toggleSync(ref),
-          ),
+
+          Consumer(
+            builder: (_, ref, __) {
+              final async = ref.watch(syncNotifierProvider);
+              return SwitchListTile(
+                title: const Text('Cloud sync'),
+                subtitle: async.isLoading
+                    ? const LinearProgressIndicator()
+                    : Text(async.value! ? 'Firebase' : 'Hive'),
+                value: async.value ?? false,
+                onChanged: (_) =>
+                    ref.read(syncNotifierProvider.notifier).toggle(),
+              );
+            },
+          )
         ],
       ),
     );
